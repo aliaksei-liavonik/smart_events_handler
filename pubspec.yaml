@@ -1,0 +1,19 @@
+name: smart_events_handler
+description: Package for handling in easy way deeplink login in the application.
+version: 1.0.0
+
+environment:
+  sdk: ^3.3.0
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_hooks: ^0.20.5
+  provider: ^6.1.2
+  rxdart: ^0.27.7
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  lints: ^3.0.0
+  test: ^1.24.0
