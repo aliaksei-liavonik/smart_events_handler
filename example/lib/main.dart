@@ -17,7 +17,7 @@ class MyApp extends HookWidget {
     final streamController = useStreamController<Event>();
     final currentIndex = useState(0);
 
-    List<Widget> pages = [
+    final pages = <Widget>[
       TriggerPage(streamController: streamController),
       const LazyEventHandlerPage(),
     ];
