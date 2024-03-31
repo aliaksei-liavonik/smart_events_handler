@@ -21,7 +21,7 @@ void main() {
     });
 
     testWidgets('Ensure each SmartEventHandler handles its own event type',
-        (WidgetTester tester) async {
+        (tester) async {
       // Setup the widget tree
       await tester.pumpWidget(
         MaterialApp(
@@ -48,8 +48,9 @@ void main() {
       );
 
       // Dispatch different types of events
-      eventsStreamController.add(Test1Event());
-      eventsStreamController.add(Test2Event());
+      eventsStreamController
+        ..add(Test1Event())
+        ..add(Test2Event());
 
       // Wait for the events to be handled
       await tester.pumpAndSettle();

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
+import 'package:smart_events_handler/smart_events_handler.dart';
 import 'package:smart_events_handler/src/smart_event_gatherer.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer_provider.dart';
 import 'package:smart_events_handler/src/smart_event_listener.dart';
 
 /// A widget that responds to specific smart events of type [Event],
@@ -34,8 +36,8 @@ final class SmartEventHandler<Event extends GathererEvent,
     required this.child,
   });
 
-  final Widget child;
   final OnSmartEventReceived<Event> onSmartEventReceived;
+  final Widget child;
 
   @override
   Widget build(BuildContext context) {

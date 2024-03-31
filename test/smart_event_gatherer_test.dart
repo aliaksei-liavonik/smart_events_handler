@@ -12,8 +12,8 @@ void main() {
 
     setUp(() {
       eventStreamController = StreamController<TestEvent>.broadcast();
-      eventGatherer = SmartEventGatherer<TestEvent>();
-      eventGatherer.init(eventStreamController.stream);
+      eventGatherer = SmartEventGatherer<TestEvent>()
+        ..init(eventStreamController.stream);
     });
 
     tearDown(() async {
@@ -24,7 +24,9 @@ void main() {
     test('Correctly receives and processes events from stream', () async {
       final expectedEvent = Test1Event();
       expectLater(
-          eventGatherer.onType<Test1Event>(), emitsInOrder([expectedEvent]));
+        eventGatherer.onType<Test1Event>(),
+        emitsInOrder([expectedEvent]),
+      );
 
       eventStreamController.add(expectedEvent);
     });
@@ -38,8 +40,9 @@ void main() {
         emitsInOrder([relevantEvent]),
       );
 
-      eventStreamController.add(irrelevantEvent);
-      eventStreamController.add(relevantEvent);
+      eventStreamController
+        ..add(irrelevantEvent)
+        ..add(relevantEvent);
     });
   });
 }
