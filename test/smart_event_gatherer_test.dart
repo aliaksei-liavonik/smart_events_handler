@@ -1,7 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter_test/flutter_test.dart';
-import 'package:smart_events_handler/src/smart_event_gatherer.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer.dart';
 
 import 'data.dart';
 
@@ -25,7 +25,7 @@ void main() {
       final expectedEvent = Test1Event();
       unawaited(
         expectLater(
-          eventGatherer.onType<Test1Event>(),
+          eventGatherer.delegate.getEvents<Test1Event>(),
           emitsInOrder([expectedEvent]),
         ),
       );
@@ -39,7 +39,7 @@ void main() {
 
       unawaited(
         expectLater(
-          eventGatherer.onType<Test1Event>(),
+          eventGatherer.delegate.getEvents<Test1Event>(),
           emitsInOrder([relevantEvent]),
         ),
       );

@@ -1,5 +1,5 @@
 name: smart_events_handler
-description: Package for handling in easy way deeplink login in the application.
+description: Package to handle in easy and flexible way different kind of events.
 version: 1.0.0
 
 environment:

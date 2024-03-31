@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
-import 'package:smart_events_handler/src/smart_event_gatherer.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer.dart';
 
 /// A widget that listens to events of type [Event], using a [SmartEventGatherer].
 ///
@@ -40,12 +40,14 @@ final class SmartEventListener<Event extends GathererEvent,
   Widget build(BuildContext context) {
     final gatherer = context.read<SmartEventGatherer<GathererEvent>>();
 
-    final lastEvent = gatherer.lastEvent;
-    final event = useState(lastEvent is Event ? lastEvent : null);
+    final event = useState<Event?>(null);
 
     useEffect(
-      () => gatherer.onType<Event>().listen((e) => event.value = e).cancel,
-      [gatherer.lastEvent],
+      () => gatherer.delegate
+          .getEvents<Event>()
+          .listen((e) => event.value = e)
+          .cancel,
+      [],
     );
 
     return builder(event.value);

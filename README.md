@@ -24,23 +24,26 @@ Then run `flutter pub get` to install the package.
 
 ### Setting up the Event Gatherer
 
-Wrap your app (or a part of your app) with `SmartEventGathererProvider` to start gathering events:
+Wrap your app (or a part of your app) with `SmartEventGathererProvider` to start gathering events. You can optionally specify a delegate for custom event handling strategies, including lazy event handling:
 
 ```dart
 SmartEventGathererProvider<MyEvent>(
   eventStream: myEventStream,
+  // Optional: Provide a custom delegate for advanced event handling.
+  // For lazy event handling, you can use LazySmartEventGathererDelegate.
+  delegate: MyCustomEventDelegate(),
   child: MyApp(),
 );
 ```
 
 ### Handling Events
 
-Use `SmartEventHandler` to handle specific events:
+Use `SmartEventHandler` within your widget tree to listen for and handle specific events. This widget will react to events of the type specified and allow you to define custom handling logic:
 
 ```dart
 SmartEventHandler<MySpecificEvent, GathererEvent>(
   onSmartEventReceived: (event) {
-    // Handle the event
+    // Custom logic to handle the event
   },
   child: MyWidget(),
 );
@@ -48,10 +51,33 @@ SmartEventHandler<MySpecificEvent, GathererEvent>(
 
 ### Dispatching Events
 
-To dispatch events, use your event stream:
+Events can be dispatched using the event stream provided to the `SmartEventGathererProvider`. This allows any part of your app to emit events that can be handled by registered event handlers:
 
 ```dart
 myEventStreamController.add(MySpecificEvent());
+```
+
+### Customizing Event Handling with Delegates
+
+The package supports custom event-handling strategies through delegates. You can implement your delegate by extending `ISmartEventGathererDelegate` or use `LazySmartEventGathererDelegate` for lazy event handling:
+
+```dart
+class MyCustomEventDelegate extends ISmartEventGathererDelegate<MyEvent> {
+  @override
+  void add(MyEvent event) {
+    // Custom logic to add events
+  }
+
+  @override
+  Stream<T> getEvents<T extends MyEvent>() {
+    // Custom logic to filter and provide events
+  }
+
+  @override
+  void markAsResolved() {
+    // Custom logic to mark events as resolved
+  }
+}
 ```
 
 ## Contributing
