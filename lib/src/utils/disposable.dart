@@ -1,10 +1,14 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:meta/meta.dart';
 
+/// Callback that used by [Disposable] to store function to dispose resources,
+/// when the [Disposable.dispose] method is called.
+@internal
 typedef DisposableCallback = FutureOr<void> Function();
 
+/// Mixin that helps to dispose resources.
+@internal
 mixin Disposable {
   final List<DisposableCallback> _disposableCallbacks = [];
 
@@ -24,12 +28,4 @@ mixin Disposable {
     await future;
     _isDisposed = true;
   }
-}
-
-T useDisposable<T extends Disposable>(T Function() valueBuilder) {
-  final value = useMemoized(valueBuilder);
-
-  useEffect(() => value.dispose, []);
-
-  return value;
 }

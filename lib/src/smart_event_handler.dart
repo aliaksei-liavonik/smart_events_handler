@@ -30,13 +30,18 @@ import 'package:smart_events_handler/src/smart_event_listener.dart';
 
 final class SmartEventHandler<Event extends GathererEvent,
     GathererEvent extends Object> extends HookWidget {
+  /// Create new instance of [SmartEventHandler].
   const SmartEventHandler({
     super.key,
     required this.onSmartEventReceived,
     required this.child,
   });
 
+  /// Callback which is called whenever [Event] emitted in the srteam of the
+  /// corresponding gatherer.
   final OnSmartEventReceived<Event> onSmartEventReceived;
+
+  // ignore: public_member_api_docs
   final Widget child;
 
   @override
