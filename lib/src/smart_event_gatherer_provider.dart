@@ -28,20 +28,24 @@ import 'package:smart_events_handler/src/smart_event_gatherer.dart';
 /// application.
 
 class SmartEventGathererProvider<Event extends Object> extends StatelessWidget {
+  /// Create new instance of [SmartEventGathererProvider].
   const SmartEventGathererProvider({
     super.key,
     required this.eventStream,
     required this.child,
   });
 
+  /// Stream of the events to gather by [SmartEventGatherer].
   final Stream<Event> eventStream;
+
+  // ignore: public_member_api_docs
   final Widget child;
 
   @override
   Widget build(BuildContext context) {
     return Provider<SmartEventGatherer<Event>>(
       lazy: false,
-      create: (_) => SmartEventGatherer<Event>()..init(eventStream),
+      create: (_) => SmartEventGatherer<Event>(eventStream),
       dispose: (_, service) => service.dispose(),
       child: child,
     );
