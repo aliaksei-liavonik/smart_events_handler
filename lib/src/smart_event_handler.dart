@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_events_handler/smart_events_handler.dart';
-import 'package:smart_events_handler/src/smart_event_gatherer.dart';
-import 'package:smart_events_handler/src/smart_event_gatherer_provider.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer.dart';
 import 'package:smart_events_handler/src/smart_event_listener.dart';
 
 /// A widget that responds to specific smart events of type [Event],
@@ -29,7 +28,7 @@ import 'package:smart_events_handler/src/smart_event_listener.dart';
 /// facilitating precise and effective event handling across diverse contexts.
 
 final class SmartEventHandler<Event extends GathererEvent,
-    GathererEvent extends Object> extends HookWidget {
+    GathererEvent extends Object> extends StatelessWidget {
   /// Create new instance of [SmartEventHandler].
   const SmartEventHandler({
     super.key,
@@ -48,24 +47,32 @@ final class SmartEventHandler<Event extends GathererEvent,
   Widget build(BuildContext context) {
     return SmartEventListener<Event, GathererEvent>(
       builder: (event) {
-        useEffect(
-          () {
-            WidgetsBinding.instance.addPostFrameCallback(
-              (_) {
-                if (event != null) {
-                  onSmartEventReceived(event);
-                  context
-                      .read<SmartEventGatherer<GathererEvent>>()
-                      .markAsResolved();
-                }
-              },
-            );
-            return null;
-          },
-          [event],
-        );
+        return HookBuilder(
+          builder: (context) {
+            useEffect(
+              () {
+                WidgetsBinding.instance.addPostFrameCallback(
+                  (_) async {
+                    final gatherer =
+                        context.read<SmartEventGatherer<GathererEvent>>();
 
-        return child;
+                    if (event != null) {
+                      try {
+                        await onSmartEventReceived(event);
+                      } finally {
+                        gatherer.markAsResolved();
+                      }
+                    }
+                  },
+                );
+                return null;
+              },
+              [event],
+            );
+
+            return child;
+          },
+        );
       },
     );
   }

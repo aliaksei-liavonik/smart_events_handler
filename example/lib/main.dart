@@ -24,6 +24,7 @@ class MyApp extends HookWidget {
 
     return SmartEventGathererProvider<Event>(
       eventStream: streamController.stream,
+      delegate: LazySmartEventGathererDelegate(),
       child: MaterialApp(
         home: Scaffold(
           body: pages[currentIndex.value],
