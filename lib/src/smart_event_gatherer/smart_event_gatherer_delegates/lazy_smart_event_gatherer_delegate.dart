@@ -1,6 +1,7 @@
+import 'package:flutter/foundation.dart';
 import 'package:rxdart/rxdart.dart';
 import 'package:smart_events_handler/smart_events_handler.dart';
-import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegate/smart_event_gatherer_delegate.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegates/smart_event_gatherer_delegate_interface.dart';
 
 /// A delegate that implements lazy event handling logic for [GathererEvent]s.
 ///
@@ -12,36 +13,46 @@ class LazySmartEventGathererDelegate<GathererEvent extends Object>
     extends ISmartEventGathererDelegate<GathererEvent> {
   /// Creates new instance of [LazySmartEventGathererDelegate].
   LazySmartEventGathererDelegate() {
-    _behaviorSubject = BehaviorSubject<_LazyEventWrapper?>();
-    addDisposable(_behaviorSubject.close);
+    behaviorSubject = BehaviorSubject<_LazyEventWrapper<GathererEvent>?>();
+    addDisposable(behaviorSubject.close);
   }
-  late final BehaviorSubject<_LazyEventWrapper?> _behaviorSubject;
+
+  /// [BehaviorSubject] to manage the stream of events
+  @visibleForTesting
+  late final BehaviorSubject<_LazyEventWrapper<GathererEvent>?> behaviorSubject;
 
   @override
   void add<Event extends GathererEvent>(Event event) {
-    _behaviorSubject.add(_LazyEventWrapper(event: event));
+    behaviorSubject.add(_LazyEventWrapper<Event>(event: event));
   }
 
   @override
   Stream<Event> getEvents<Event extends GathererEvent>() {
-    final initialEventWrapper = _behaviorSubject.valueOrNull;
+    final initialEventWrapper = behaviorSubject.valueOrNull;
     final initialEvent = initialEventWrapper?.event;
 
-    if (initialEvent != null && initialEvent is Event) {
+    if (initialEventWrapper != null &&
+        !initialEventWrapper.handled &&
+        initialEvent != null &&
+        initialEvent is Event) {
       return Rx.merge(
         [
           Stream.value(initialEvent),
-          _behaviorSubject.stream.whereType<Event>(),
+          behaviorSubject.stream
+              .whereType<_LazyEventWrapper<Event>>()
+              .map((event) => event.event),
         ],
       );
     }
 
-    return _behaviorSubject.stream.whereType<Event>();
+    return behaviorSubject.stream
+        .whereType<_LazyEventWrapper<Event>>()
+        .map((event) => event.event);
   }
 
   @override
   void markAsResolved() {
-    _behaviorSubject.valueOrNull?.markAsResolved();
+    behaviorSubject.valueOrNull?.markAsResolved();
   }
 }
 

@@ -60,7 +60,7 @@ final class SmartEventHandler<Event extends GathererEvent,
                       try {
                         await onSmartEventReceived(event);
                       } finally {
-                        gatherer.delegate.markAsResolved();
+                        gatherer.markAsResolved();
                       }
                     }
                   },

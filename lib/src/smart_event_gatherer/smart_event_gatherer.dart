@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegate/smart_event_gatherer_delegate.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegates/smart_event_gatherer_delegate.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegates/smart_event_gatherer_delegate_interface.dart';
 import 'package:smart_events_handler/src/utils/disposable.dart';
 
 /// Callback definition for handling received events of type [Event].
@@ -33,12 +34,12 @@ final class SmartEventGatherer<GathererEvent extends Object> with Disposable {
     Stream<GathererEvent> eventsStream, {
     ISmartEventGathererDelegate<GathererEvent>? delegate,
   }) {
-    this.delegate = delegate ?? SmartEventGathererDelegate<GathererEvent>();
+    this._delegate = delegate ?? SmartEventGathererDelegate<GathererEvent>();
 
     addDisposable(
-      eventsStream.listen(this.delegate.add).cancel,
+      eventsStream.listen(_delegate.add).cancel,
     );
-    addDisposable(() async => await delegate?.dispose());
+    addDisposable(_delegate.dispose);
   }
 
   /// The delegate responsible for handling the events.
@@ -46,5 +47,14 @@ final class SmartEventGatherer<GathererEvent extends Object> with Disposable {
   /// This delegate can be customized to alter how events are processed
   /// and handled within the application. It provides a layer of flexibility
   /// in event management, allowing for sophisticated event handling strategies.
-  late final ISmartEventGathererDelegate<GathererEvent> delegate;
+  late final ISmartEventGathererDelegate<GathererEvent> _delegate;
+
+  /// See [ISmartEventGathererDelegate].
+  Stream<T> getEvents<T extends GathererEvent>() => _delegate.getEvents<T>();
+
+  /// See [ISmartEventGathererDelegate].
+  void add<Event extends GathererEvent>(Event event) => _delegate.add(event);
+
+  /// See [ISmartEventGathererDelegate].
+  void markAsResolved() => _delegate.markAsResolved();
 }

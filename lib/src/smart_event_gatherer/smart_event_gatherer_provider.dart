@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer.dart';
-import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegate/smart_event_gatherer_delegate.dart';
+import 'package:smart_events_handler/src/smart_event_gatherer/smart_event_gatherer_delegates/smart_event_gatherer_delegates.dart';
 
 /// Provides a [SmartEventGatherer] to the widget tree using a [Provider].
 ///

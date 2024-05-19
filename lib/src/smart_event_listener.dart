@@ -43,10 +43,7 @@ final class SmartEventListener<Event extends GathererEvent,
     final event = useState<Event?>(null);
 
     useEffect(
-      () => gatherer.delegate
-          .getEvents<Event>()
-          .listen((e) => event.value = e)
-          .cancel,
+      () => gatherer.getEvents<Event>().listen((e) => event.value = e).cancel,
       [],
     );
 
